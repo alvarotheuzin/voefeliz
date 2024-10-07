@@ -9,6 +9,7 @@ import { Button, Form } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { v4 } from "uuid";
+import { useState, useEffect } from "react"; // Import useState and useEffect
 
 export default function Page({ params }) {
 
@@ -16,23 +17,39 @@ export default function Page({ params }) {
 
     const aeroportos = JSON.parse(localStorage.getItem('aeroportos')) || []
     const dados = aeroportos.find(item => item.id == params.id)
-    const aeroporto = dados || { nome: '', sigla: '', uf: '', cidade: ''}
+    const aeroporto = dados || { nome: '', sigla: '', uf: '', cidade: '', pais: '' } // Added pais field
 
-    const [ paises, setPaises] = useState([])
-    const [ ufs, setUfs] = useState([])
-    const [ cidades, setCidades] = useState([])
+    const [paises, setPaises] = useState([])
+    const [ufs, setUfs] = useState([])
+    const [cidades, setCidades] = useState([])
 
-    useEffect(()=>{
-
-        apiLocalidade.get(`paises`).then(resultados=>{
+    // Fetch countries
+    useEffect(() => {
+        apiLocalidade.get('paises').then(resultado => {
             setPaises(resultado.data)
         })
-
     }, [])
-    
-    function salvar(dados) {
 
-        if(aeroporto.id){
+    // Fetch UFs based on selected country (assuming apiLocalidade supports it)
+    useEffect(() => {
+        if (aeroporto.pais) {
+            apiLocalidade.get(`ufs?pais=${aeroporto.pais}`).then(resultado => {
+                setUfs(resultado.data)
+            })
+        }
+    }, [aeroporto.pais])
+
+    // Fetch cities based on selected UF
+    useEffect(() => {
+        if (aeroporto.uf) {
+            apiLocalidade.get(`cidades?uf=${aeroporto.uf}`).then(resultado => {
+                setCidades(resultado.data)
+            })
+        }
+    }, [aeroporto.uf])
+
+    function salvar(dados) {
+        if (aeroporto.id) {
             Object.assign(aeroporto, dados)
         } else {
             dados.id = v4()
@@ -45,7 +62,6 @@ export default function Page({ params }) {
 
     return (
         <Pagina titulo="Aeroportos">
-
             <Formik
                 initialValues={aeroporto}
                 onSubmit={values => salvar(values)}
@@ -68,43 +84,47 @@ export default function Page({ params }) {
                         <Form.Group className="mb-3" controlId="pais">
                             <Form.Label>Pais</Form.Label>
                             <Form.Select
-                                type="text"
                                 name="pais"
                                 value={values.pais}
                                 onChange={handleChange('pais')}
-                                >
-                                <option value= ''>Selecione</option>
-                                    {paises.map(item => (
-                                        <option value={item.nome}>{item.nome}</option>
-                                    ))}
-                                </Form.Select>
+                            >
+                                <option value=''>Selecione</option>
+                                {paises.map(item => (
+                                    <option key={item.nome} value={item.nome}>{item.nome}</option>
+                                ))}
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="uf">
                             <Form.Label>Uf</Form.Label>
-                            <Form.Control
-                                type="text"
+                            <Form.Select
                                 name="uf"
                                 value={values.uf}
                                 onChange={handleChange('uf')}
-                            />
+                            >
+                                <option value=''>Selecione</option>
+                                {ufs.map(uf => (
+                                    <option key={uf.sigla} value={uf.sigla}>{uf.nome}</option>
+                                ))}
+                            </Form.Select>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="cidade">
                             <Form.Label>Cidade</Form.Label>
-                            <Form.Control
-                                type="text"
+                            <Form.Select
                                 name="cidade"
                                 value={values.cidade}
                                 onChange={handleChange('cidade')}
-                            />
+                            >
+                                <option value=''>Selecione</option>
+                                {cidades.map(cidade => (
+                                    <option key={cidade} value={cidade}>{cidade}</option>
+                                ))}
+                            </Form.Select>
                         </Form.Group>
                         <div className="text-center">
-                            <Button onClick={handleSubmit} variant="success">
+                            <Button onClick={() => handleSubmit()} variant="success">
                                 <FaCheck /> Salvar
                             </Button>
-                            <Link
-                                href="/aeroportos"
-                                className="btn btn-danger ms-2"
-                            >
+                            <Link href="/aeroportos" className="btn btn-danger ms-2">
                                 <MdOutlineArrowBack /> Voltar
                             </Link>
                         </div>
