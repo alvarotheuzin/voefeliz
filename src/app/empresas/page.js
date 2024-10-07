@@ -1,71 +1,66 @@
 'use client'
 
-import Pagina from "@/components/Pagina"
 import Link from "next/link"
+import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap"
 import { FaPlusCircle } from "react-icons/fa";
+import { FaRegEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import Pagina from "../components/Pagina";
 
 export default function Page() {
 
-    const empresas = JSON.parse(localStorage.getItem('empresas')) || []
+    const [empresas, setEmpresas] = useState([])
+
+    useEffect(() => {
+        setEmpresas(JSON.parse(localStorage.getItem('empresas')) || [])
+    }, [])
+
+    function excluir(id) {
+        if (confirm('Você está prestes a excluir este arquivo. Continuar? Esta ação não pode ser desfeita.')) {
+            const dados = empresas.filter(item => item.id != id)
+            localStorage.setItem('empresas', JSON.stringify(dados))
+            setEmpresas(dados)
+        }
+    }
 
     return (
         <Pagina titulo="Empresas">
 
             <Link
-                href="/empresas/create"
+                href="/empresas/form"
                 className="btn btn-primary mb-3"
             >
                 <FaPlusCircle /> Novo
             </Link>
 
-            <Table striped bordered hover responsive>
+            <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th colSpan="20" className="text-center">Voo</th>
-                    </tr>
-                    <tr>
                         <th>#</th>
-                        <th>Aeroporto</th>
-                        <th>Cidade</th>
-                        <th>UF</th>
-                        <th>Empresa</th>
-                        <th>Site</th>
-                        <th>Voo</th>
-                        <th>Origem</th>
-                        <th>Destino</th>
-                        <th>Preço</th>
-                        <th>Assento</th>
                         <th>Nome</th>
-                        <th>Tipo de Documento</th>
-                        <th>Data de Nascimento</th>
-                        <th>Telefone</th>
-                        <th>E-mail</th>
+                        <th>Logo</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {empresas.map((item, index) => (
-                        <tr key={index}>
-                            <td>{index + 1}</td>
-                            <td>{item.aeroporto}</td>
-                            <td>{item.cidade}</td>
-                            <td>{item.uf}</td>
+                    {empresas.map((item, i) => (
+                        <tr key={item.id}>
+                            <td>
+                                <Link href={`/empresas/form/${item.id}`}>
+                                    <FaRegEdit title="Editar" className="text-primary" />
+                                </Link>
+                                <MdDelete
+                                    title="Excluir"
+                                    className="text-danger"
+                                    onClick={() => excluir(item.id)}
+                                />
+                            </td>
                             <td>{item.nome}</td>
                             <td>
-                                <a href={item.site} target="_blank" rel="noopener noreferrer">
-                                    <img src={item.logo} alt="Logo" width={50} />
+                                <a href={item.site} target="_blank">
+                                    <img src={item.logo} width={100} />
                                 </a>
                             </td>
-                            <td>{item.voo}</td>
-                            <td>{item.origem}</td>
-                            <td>{item.destino}</td>
-                            <td>{item.preco}</td>
-                            <td>{item.assento}</td>
-                            <td>{item.nomePassageiro}</td>
-                            <td>{item.tipoDocumento}</td>
-                            <td>{item.dataNascimento}</td>
-                            <td>{item.telefone}</td>
-                            <td>{item.email}</td>
                         </tr>
                     ))}
                 </tbody>
