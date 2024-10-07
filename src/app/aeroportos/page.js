@@ -36,7 +36,9 @@ export default function Page() {
                     <tr>
                         <th>#</th>
                         <th>Nome</th>
-                        <th>Localização</th>
+                        <th>Pais</th>
+                        <th>Uf</th>
+                        <th>Cidade</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,7 +55,9 @@ export default function Page() {
                                 />
                             </td>
                             <td>{item.nome}</td>
-                            <td>{item.localizacao}</td>
+                            <td>{item.pais}</td>
+                            <td>{item.uf}</td>
+                            <td>{item.cidade}</td>
                         </tr>
                     ))}
                 </tbody>
