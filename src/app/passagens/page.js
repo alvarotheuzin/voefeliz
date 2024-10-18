@@ -10,7 +10,7 @@ export default function Passagens() {
 
     return (
         <Pagina titulo="Passagens">
-            <Link href="/passagens/create" className="btn btn-primary mb-3">
+            <Link href="/passagens/form" className="btn btn-primary mb-3">
                 <FaPlusCircle /> Novo
             </Link>
             <Table striped bordered hover>

@@ -12,7 +12,7 @@ export default function Passageiros() {
 
     return (
         <Pagina titulo="Passageiros">
-            <Link href="/passageiros/create" className="btn btn-primary mb-3">
+            <Link href="/passageiros/form" className="btn btn-primary mb-3">
                 <FaPlusCircle /> Novo
             </Link>
 

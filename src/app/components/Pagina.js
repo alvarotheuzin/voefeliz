@@ -15,22 +15,22 @@ export default function Pagina(props) {
                         <NavDropdown title="Aeroportos" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/aeroportos">Listar</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/aeroportos/create">Novo Aeroporto</NavDropdown.Item>
+                            <NavDropdown.Item href="/aeroportos/form">Novo Aeroporto</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Voos" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/voos">Listar</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/voos/create">Novo Voo</NavDropdown.Item>
+                            <NavDropdown.Item href="/voos/form">Novo Voo</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Passageiros" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/passageiros">Listar</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/passageiros/create">Novo Passageiro</NavDropdown.Item>
+                            <NavDropdown.Item href="/passageiros/form">Novo Passageiro</NavDropdown.Item>
                         </NavDropdown>
                         <NavDropdown title="Passagens" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/passagens">Listar</NavDropdown.Item>
                             <NavDropdown.Divider />
-                            <NavDropdown.Item href="/passagens/create">Nova Passagem</NavDropdown.Item>
+                            <NavDropdown.Item href="/passagens/form">Nova Passagem</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Container>
