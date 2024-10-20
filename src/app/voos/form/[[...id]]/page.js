@@ -16,7 +16,7 @@ export default function Page({ params }) {
 
     const voos = JSON.parse(localStorage.getItem('voos')) || []
     const dados = voos.find(item => item.id == params.id)
-    const voo = dados || { nome: '', logo: '', site: '' }
+    const voo = dados || { identificador: '', empresa: '', origem: '', destino: '', preco: '', data_checkin: '', data_embarque: '' }
 
     const [empresas, setEmpresas] = useState([])
     const [aeroportos, setAeroportos] = useState([])
@@ -27,7 +27,6 @@ export default function Page({ params }) {
     }, [])
 
     function salvar(dados) {
-
         if (voo.id) {
             Object.assign(voo, dados)
         } else {
@@ -44,12 +43,48 @@ export default function Page({ params }) {
 
             <Formik
                 initialValues={voo}
+                validate={values => {
+                    const errors = {}
+
+                    if (!values.identificador) {
+                        errors.identificador = 'Identificador é obrigatório'
+                    }
+
+                    if (!values.empresa) {
+                        errors.empresa = 'Empresa é obrigatória'
+                    }
+
+                    if (!values.origem) {
+                        errors.origem = 'Origem é obrigatória'
+                    }
+
+                    if (!values.destino) {
+                        errors.destino = 'Destino é obrigatório'
+                    }
+
+                    if (!values.preco) {
+                        errors.preco = 'Preço é obrigatório'
+                    } else if (isNaN(values.preco)) {
+                        errors.preco = 'Preço deve ser numérico'
+                    }
+
+                    if (!values.data_checkin) {
+                        errors.data_checkin = 'Data de Check-in é obrigatória'
+                    }
+
+                    if (!values.data_embarque) {
+                        errors.data_embarque = 'Data de Embarque é obrigatória'
+                    }
+
+                    return errors
+                }}
                 onSubmit={values => salvar(values)}
             >
                 {({
                     values,
                     handleChange,
                     handleSubmit,
+                    errors,
                 }) => (
                     <Form>
                         <Form.Group className="mb-3" controlId="identificador">
@@ -59,7 +94,11 @@ export default function Page({ params }) {
                                 name="identificador"
                                 value={values.identificador}
                                 onChange={handleChange('identificador')}
+                                isInvalid={errors.identificador}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.identificador}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="empresa">
                             <Form.Label>Empresa</Form.Label>
@@ -67,6 +106,7 @@ export default function Page({ params }) {
                                 name="empresa"
                                 value={values.empresa}
                                 onChange={handleChange('empresa')}
+                                isInvalid={errors.empresa}
                             >
                                 <option value=''>Selecione</option>
                                 {empresas.map(item => (
@@ -75,6 +115,9 @@ export default function Page({ params }) {
                                     </option>
                                 ))}
                             </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.empresa}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="origem">
                             <Form.Label>Origem</Form.Label>
@@ -82,6 +125,7 @@ export default function Page({ params }) {
                                 name="origem"
                                 value={values.origem}
                                 onChange={handleChange('origem')}
+                                isInvalid={errors.origem}
                             >
                                 <option value=''>Selecione</option>
                                 {aeroportos.map(item => (
@@ -90,6 +134,9 @@ export default function Page({ params }) {
                                     </option>
                                 ))}
                             </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.origem}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="destino">
                             <Form.Label>Destino</Form.Label>
@@ -97,6 +144,7 @@ export default function Page({ params }) {
                                 name="destino"
                                 value={values.destino}
                                 onChange={handleChange('destino')}
+                                isInvalid={errors.destino}
                             >
                                 <option value=''>Selecione</option>
                                 {aeroportos.map(item => (
@@ -105,6 +153,9 @@ export default function Page({ params }) {
                                     </option>
                                 ))}
                             </Form.Select>
+                            <Form.Control.Feedback type="invalid">
+                                {errors.destino}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="preco">
                             <Form.Label>Preço</Form.Label>
@@ -113,7 +164,11 @@ export default function Page({ params }) {
                                 name="preco"
                                 value={values.preco}
                                 onChange={handleChange('preco')}
+                                isInvalid={errors.preco}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.preco}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="data_checkin">
                             <Form.Label>dt. Checkin</Form.Label>
@@ -122,7 +177,11 @@ export default function Page({ params }) {
                                 name="data_checkin"
                                 value={values.data_checkin}
                                 onChange={handleChange('data_checkin')}
+                                isInvalid={errors.data_checkin}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.data_checkin}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="data_embarque">
                             <Form.Label>Dt. embarque</Form.Label>
@@ -131,7 +190,11 @@ export default function Page({ params }) {
                                 name="data_embarque"
                                 value={values.data_embarque}
                                 onChange={handleChange('data_embarque')}
+                                isInvalid={errors.data_embarque}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.data_embarque}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <div className="text-center">
                             <Button onClick={handleSubmit} variant="success">

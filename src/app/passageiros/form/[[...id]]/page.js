@@ -1,6 +1,5 @@
 'use client';
 
-
 import Pagina from "@/app/components/Pagina";
 import { Formik } from "formik";
 import Link from "next/link";
@@ -23,9 +22,22 @@ export default function CreatePassageiro() {
         <Pagina titulo="Novo Passageiro">
             <Formik
                 initialValues={{ nome: '', documento: '' }}
+                validate={values => {
+                    const errors = {};
+
+                    if (!values.nome) {
+                        errors.nome = 'Nome é obrigatório';
+                    }
+
+                    if (!values.documento) {
+                        errors.documento = 'Documento é obrigatório';
+                    }
+
+                    return errors;
+                }}
                 onSubmit={values => salvar(values)}
             >
-                {({ values, handleChange, handleSubmit }) => (
+                {({ values, handleChange, handleSubmit, errors }) => (
                     <Form>
                         <Form.Group className="mb-3" controlId="nome">
                             <Form.Label>Nome</Form.Label>
@@ -34,8 +46,11 @@ export default function CreatePassageiro() {
                                 name="nome"
                                 value={values.nome}
                                 onChange={handleChange('nome')}
-                                required
+                                isInvalid={errors.nome}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.nome}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="documento">
                             <Form.Label>Documento</Form.Label>
@@ -44,8 +59,11 @@ export default function CreatePassageiro() {
                                 name="documento"
                                 value={values.documento}
                                 onChange={handleChange('documento')}
-                                required
+                                isInvalid={errors.documento}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.documento}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <div className="text-center">
                             <Button onClick={handleSubmit} variant="success">

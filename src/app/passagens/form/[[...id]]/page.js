@@ -22,9 +22,26 @@ export default function CreatePassagem() {
         <Pagina titulo="Nova Passagem">
             <Formik
                 initialValues={{ passageiro: '', voo: '', data: '' }}
+                validate={values => {
+                    const errors = {};
+
+                    if (!values.passageiro) {
+                        errors.passageiro = 'Passageiro é obrigatório';
+                    }
+
+                    if (!values.voo) {
+                        errors.voo = 'Voo é obrigatório';
+                    }
+
+                    if (!values.data) {
+                        errors.data = 'Data é obrigatória';
+                    }
+
+                    return errors;
+                }}
                 onSubmit={values => salvar(values)}
             >
-                {({ values, handleChange, handleSubmit }) => (
+                {({ values, handleChange, handleSubmit, errors }) => (
                     <Form>
                         <Form.Group className="mb-3" controlId="passageiro">
                             <Form.Label>Passageiro</Form.Label>
@@ -33,8 +50,11 @@ export default function CreatePassagem() {
                                 name="passageiro"
                                 value={values.passageiro}
                                 onChange={handleChange('passageiro')}
-                                required
+                                isInvalid={errors.passageiro}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.passageiro}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="voo">
                             <Form.Label>Voo</Form.Label>
@@ -43,8 +63,11 @@ export default function CreatePassagem() {
                                 name="voo"
                                 value={values.voo}
                                 onChange={handleChange('voo')}
-                                required
+                                isInvalid={errors.voo}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.voo}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="data">
                             <Form.Label>Data</Form.Label>
@@ -53,8 +76,11 @@ export default function CreatePassagem() {
                                 name="data"
                                 value={values.data}
                                 onChange={handleChange('data')}
-                                required
+                                isInvalid={errors.data}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.data}
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <div className="text-center">
                             <Button onClick={handleSubmit} variant="success">
