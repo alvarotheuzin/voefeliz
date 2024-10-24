@@ -9,6 +9,7 @@ import { Button, Form } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
 import { v4 } from "uuid";
+import { mask } from "remask"; // Adiciona importação da remask
 
 export default function Page({ params }) {
 
@@ -64,7 +65,7 @@ export default function Page({ params }) {
 
                     if (!values.preco) {
                         errors.preco = 'Preço é obrigatório'
-                    } else if (isNaN(values.preco)) {
+                    } else if (isNaN(values.preco.replace(/[^\d]/g, ''))) { // Remove símbolos monetários para validação
                         errors.preco = 'Preço deve ser numérico'
                     }
 
@@ -84,131 +85,140 @@ export default function Page({ params }) {
                     values,
                     handleChange,
                     handleSubmit,
+                    setFieldValue,
                     errors,
-                }) => (
-                    <Form>
-                        <Form.Group className="mb-3" controlId="identificador">
-                            <Form.Label>Identificador</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="identificador"
-                                value={values.identificador}
-                                onChange={handleChange('identificador')}
-                                isInvalid={errors.identificador}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.identificador}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="empresa">
-                            <Form.Label>Empresa</Form.Label>
-                            <Form.Select
-                                name="empresa"
-                                value={values.empresa}
-                                onChange={handleChange('empresa')}
-                                isInvalid={errors.empresa}
-                            >
-                                <option value=''>Selecione</option>
-                                {empresas.map(item => (
-                                    <option key={item.nome} value={item.nome}>
-                                        {item.nome}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.empresa}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="origem">
-                            <Form.Label>Origem</Form.Label>
-                            <Form.Select
-                                name="origem"
-                                value={values.origem}
-                                onChange={handleChange('origem')}
-                                isInvalid={errors.origem}
-                            >
-                                <option value=''>Selecione</option>
-                                {aeroportos.map(item => (
-                                    <option key={item.sigla} value={item.sigla}>
-                                        {item.sigla} - {item.nome}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.origem}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="destino">
-                            <Form.Label>Destino</Form.Label>
-                            <Form.Select
-                                name="destino"
-                                value={values.destino}
-                                onChange={handleChange('destino')}
-                                isInvalid={errors.destino}
-                            >
-                                <option value=''>Selecione</option>
-                                {aeroportos.map(item => (
-                                    <option key={item.sigla} value={item.sigla}>
-                                        {item.sigla} - {item.nome}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {errors.destino}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="preco">
-                            <Form.Label>Preço</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="preco"
-                                value={values.preco}
-                                onChange={handleChange('preco')}
-                                isInvalid={errors.preco}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.preco}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="data_checkin">
-                            <Form.Label>dt. Checkin</Form.Label>
-                            <Form.Control
-                                type="date"
-                                name="data_checkin"
-                                value={values.data_checkin}
-                                onChange={handleChange('data_checkin')}
-                                isInvalid={errors.data_checkin}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.data_checkin}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="data_embarque">
-                            <Form.Label>Dt. embarque</Form.Label>
-                            <Form.Control
-                                type="date"
-                                name="data_embarque"
-                                value={values.data_embarque}
-                                onChange={handleChange('data_embarque')}
-                                isInvalid={errors.data_embarque}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.data_embarque}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <div className="text-center">
-                            <Button onClick={handleSubmit} variant="success">
-                                <FaCheck /> Salvar
-                            </Button>
-                            <Link
-                                href="/voos"
-                                className="btn btn-danger ms-2"
-                            >
-                                <MdOutlineArrowBack /> Voltar
-                            </Link>
-                        </div>
-                    </Form>
-                )}
+                }) => {
+
+                    
+                    useEffect(() => {
+                        setFieldValue('preco', mask(values.preco, ['R$ 99999,99', 'R$ 9999,99', 'R$ 999,99']))
+                    }, [values.preco])
+
+                    return (
+                        <Form>
+                            <Form.Group className="mb-3" controlId="identificador">
+                                <Form.Label>Identificador</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="identificador"
+                                    value={values.identificador}
+                                    onChange={handleChange('identificador')}
+                                    isInvalid={errors.identificador}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.identificador}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="empresa">
+                                <Form.Label>Empresa</Form.Label>
+                                <Form.Select
+                                    name="empresa"
+                                    value={values.empresa}
+                                    onChange={handleChange('empresa')}
+                                    isInvalid={errors.empresa}
+                                >
+                                    <option value=''>Selecione</option>
+                                    {empresas.map(item => (
+                                        <option key={item.nome} value={item.nome}>
+                                            {item.nome}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.empresa}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="origem">
+                                <Form.Label>Origem</Form.Label>
+                                <Form.Select
+                                    name="origem"
+                                    value={values.origem}
+                                    onChange={handleChange('origem')}
+                                    isInvalid={errors.origem}
+                                >
+                                    <option value=''>Selecione</option>
+                                    {aeroportos.map(item => (
+                                        <option key={item.sigla} value={item.sigla}>
+                                            {item.sigla} - {item.nome}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.origem}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="destino">
+                                <Form.Label>Destino</Form.Label>
+                                <Form.Select
+                                    name="destino"
+                                    value={values.destino}
+                                    onChange={handleChange('destino')}
+                                    isInvalid={errors.destino}
+                                >
+                                    <option value=''>Selecione</option>
+                                    {aeroportos.map(item => (
+                                        <option key={item.sigla} value={item.sigla}>
+                                            {item.sigla} - {item.nome}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.destino}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="preco">
+                                <Form.Label>Preço</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="preco"
+                                    value={values.preco}
+                                    onChange={handleChange('preco')}
+                                    isInvalid={errors.preco}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.preco}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="data_checkin">
+                                <Form.Label>dt. Checkin</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="data_checkin"
+                                    value={values.data_checkin}
+                                    onChange={handleChange('data_checkin')}
+                                    isInvalid={errors.data_checkin}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.data_checkin}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="data_embarque">
+                                <Form.Label>Dt. embarque</Form.Label>
+                                <Form.Control
+                                    type="date"
+                                    name="data_embarque"
+                                    value={values.data_embarque}
+                                    onChange={handleChange('data_embarque')}
+                                    isInvalid={errors.data_embarque}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errors.data_embarque}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <div className="text-center">
+                                <Button onClick={handleSubmit} variant="success">
+                                    <FaCheck /> Salvar
+                                </Button>
+                                <Link
+                                    href="/voos"
+                                    className="btn btn-danger ms-2"
+                                >
+                                    <MdOutlineArrowBack /> Voltar
+                                </Link>
+                            </div>
+                        </Form>
+                    )
+                }}
             </Formik>
         </Pagina>
     )
